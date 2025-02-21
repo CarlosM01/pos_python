@@ -8,6 +8,7 @@ from .serializers import (
     SaleItemCreateSerializer, 
     SaleItemReadSerializer
 )
+from django.db import models
 
 # Create your views here.
 
@@ -17,10 +18,22 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 class SaleViewSet(viewsets.ModelViewSet):
     queryset = Sale.objects.all()
+    
+    def get_queryset(self):
+        return Sale.objects.annotate(
+            total_price=models.Sum(
+                models.F('items__product__price') * models.F('items__quantity')
+            )
+        )
     serializer_class = SaleSerializer
 
 class SaleItemViewSet(viewsets.ModelViewSet):
     queryset = SaleItem.objects.all()
+    
+    def get_queryset(self):
+        return SaleItem.objects.annotate(
+            subtotal=models.F('product__price') * models.F('quantity')
+        )
     
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
