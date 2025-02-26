@@ -1,5 +1,6 @@
 # Point of Sale (POS) System API
 
+## Introduction
 This API provides endpoints for managing a Point of Sale system, including products, sales, and sale items. It allows you to:
 
 - Manage product inventory (create, read, update, delete products)
@@ -10,7 +11,7 @@ This API provides endpoints for managing a Point of Sale system, including produ
 
 The API is built using Django REST Framework and follows RESTful principles. It includes automatic stock validation and updates, computed fields for pricing, and proper error handling.
 
-Key Features:
+## Key Features:
 - Full CRUD operations for products and sales
 - Automatic stock management
 - Price calculations
@@ -23,16 +24,60 @@ Key Features:
 http://localhost:8000/api/
 ```
 
+## Data structure   
+
+Here is the Entity Relationship diagram of our database structure:
+
+![ER Diagram](docs/er_diagram.png)
+
+The diagram shows the relationships between:
+- Products (containing inventory information)
+- Sales (representing transactions)
+- SaleItems (linking products to sales)
+
+
 ## Endpoints
 
-### Products
+### Product Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products/` | List all products |
+| GET | `/api/products/{id}/` | Get a specific product |
+| POST | `/api/products/` | Create a new product |
+| PUT | `/api/products/{id}/` | Update a product |
+| PATCH | `/api/products/{id}/` | Partially update a product |
+| DELETE | `/api/products/{id}/` | Delete a product |
 
-#### List all products
+### Sale Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/sales/` | List all sales |
+| GET | `/api/sales/{id}/` | Get a specific sale |
+| POST | `/api/sales/` | Create a new sale |
+| PUT | `/api/sales/{id}/` | Update a sale |
+| PATCH | `/api/sales/{id}/` | Partially update a sale |
+| DELETE | `/api/sales/{id}/` | Delete a sale |
+
+### Sale Item Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/saleitems/` | List all sale items |
+| GET | `/api/saleitems/{id}/` | Get a specific sale item |
+| POST | `/api/saleitems/` | Create a new sale item |
+| PUT | `/api/saleitems/{id}/` | Update a sale item |
+| PATCH | `/api/saleitems/{id}/` | Partially update a sale item |
+| DELETE | `/api/saleitems/{id}/` | Delete a sale item |
+
+### Endpoints details
+
+#### Products
+
+##### List all products
 ```http
 GET /api/products/
 ```
 
-**Response**
+*Response* 
 ```json
 [
     {
@@ -44,12 +89,12 @@ GET /api/products/
 ]
 ```
 
-#### Get single product
+##### Get single product
 ```http
 GET /api/products/{id}/
 ```
 
-**Response**
+*Response*
 ```json
 {
     "id": 1,
@@ -59,12 +104,12 @@ GET /api/products/{id}/
 }
 ```
 
-#### Create product
+##### Create product
 ```http
 POST /api/products/
 ```
 
-**Request Body**
+*Request Body*
 ```json
 {
     "name": "New Product",
@@ -73,13 +118,13 @@ POST /api/products/
 }
 ```
 
-#### Update product
+##### Update product
 ```http
 PUT /api/products/{id}/
 PATCH /api/products/{id}/  # For partial updates
 ```
 
-**Request Body**
+*Request Body*
 ```json
 {
     "name": "Updated Product",
@@ -88,25 +133,25 @@ PATCH /api/products/{id}/  # For partial updates
 }
 ```
 
-#### Delete product
+##### Delete product
 ```http
 DELETE /api/products/{id}/
 ```
 
-### Sales
+#### Sales
 
-#### List all sales
+##### List all sales
 ```http
 GET /api/sales/
 ```
 
-**Response**
+*Response*
 ```json
 [
     {
     "id": 1,
     "date": "2025-02-21T17:01:51.407903Z",
-    "items": [
+    "items_data": [
       {
         "product": {
           "id": 1,
@@ -123,20 +168,20 @@ GET /api/sales/
 ]
 ```
 
-#### Get single sale
+##### Get single sale
 ```http
 GET /api/sales/{id}/
 ```
 
-#### Create sale
+##### Create sale
 ```http
 POST /api/sales/
 ```
 
-**Request Body**
+*Request Body*
 ```json
 {
-    "items": [
+    "items_data": [
         {
             "product": 1,
             "quantity": 3
@@ -149,25 +194,25 @@ POST /api/sales/
 }
 ```
 
-#### Update sale
+##### Update sale
 ```http
 PUT /api/sales/{id}/
 PATCH /api/sales/{id}/  # For partial updates
 ```
 
-#### Delete sale
+##### Delete sale
 ```http
 DELETE /api/sales/{id}/
 ```
 
-### Sale Items
+#### Sale Items
 
-#### List all sale items
+##### List all sale items
 ```http
 GET /api/saleitems/
 ```
 
-**Response**
+*Response*
 ```json
 [
     {
@@ -180,17 +225,17 @@ GET /api/saleitems/
 ]
 ```
 
-#### Get single sale item
+##### Get single sale item
 ```http
 GET /api/saleitems/{id}/
 ```
 
-#### Create sale item
+##### Create sale item
 ```http
 POST /api/saleitems/
 ```
 
-**Request Body**
+*Request Body*
 ```json
 {
     "sale": 1,
@@ -199,13 +244,13 @@ POST /api/saleitems/
 }
 ```
 
-#### Update sale item
+##### Update sale item
 ```http
 PUT /api/saleitems/{id}/
 PATCH /api/saleitems/{id}/  # For partial updates
 ```
 
-#### Delete sale item
+##### Delete sale item
 ```http
 DELETE /api/saleitems/{id}/
 ```
@@ -233,56 +278,33 @@ Error responses will include a message describing the error:
 }
 ```
 
-## Authentication
+## Testing
 
-[Add authentication details if implemented]
+To run all tests, use the following command:
+```
+python manage.py test
+```
 
-## Rate Limiting
+### Unit Tests 
 
-[Add rate limiting details if implemented]
+#### Models
 
-## Future Features
+To run **product model** tests, use the following command:
+```
+python manage.py test api.tests.models.test_product
+```
 
-The following features are planned for future releases:
+### Integration Tests
 
-### Authentication and Authorization
-- JWT token-based authentication
-- Role-based access control (Admin, Manager, Cashier)
-- User management endpoints
-- Session management
+To run **product integration** tests, use the following command:
+```
+python manage.py test api.tests.integration.test_product
+```
 
-### Enhanced Sales Features
-- Support for discounts and promotions
-- Tax calculations
-- Multiple payment methods
-- Receipt generation and printing
-- Refund processing
+### For Colaboration
 
-### Inventory Management
-- Low stock alerts
-- Automatic reordering
-- Batch product updates
-- Product categories and tags
-- Product variants (size, color, etc.)
+For robustness, please include test for all one feature that you have implemented, following the file structure used in the project.
 
-### Reporting
-- Sales analytics dashboard
-- Daily/weekly/monthly reports
-- Revenue forecasting
-- Best-selling products tracking
-- Customer purchase history
 
-### Integration Features
-- External payment gateway integration
-- Barcode scanner support
-- Export data to CSV/Excel
-- Email notifications
-- Third-party accounting software integration
-
-### Performance Optimizations
-- Response caching
-- Bulk operations
-- Pagination improvements
-- Search optimization
 
 

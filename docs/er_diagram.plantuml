@@ -1,0 +1,26 @@
+@startuml POS System ER Diagram
+entity Product {
+    * id: Integer <<PK>>
+    --
+    * name: String
+    * price: Decimal
+    * stock: Integer
+}
+
+entity Sale {
+    * id: Integer <<PK>>
+    --
+    * date: DateTime
+}
+
+entity SaleItem {
+    * id: Integer <<PK>>
+    --
+    * quantity: Integer
+    * sale_id: Integer <<FK>>
+    * product_id: Integer <<FK>>
+}
+
+Sale ||--o{ SaleItem
+Product ||--o{ SaleItem
+@enduml
